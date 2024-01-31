@@ -86,10 +86,22 @@ class OurTestScene : public Scene
 	Camera* m_camera;
 
 	Model* m_quad;
+	Model* m_cube;
 	Model* m_sponza;
+	Model* m_sphere1;
+	Model* m_sphere2;
+	Model* m_sphere3;
 
 	mat4f m_sponza_transform;
 	mat4f m_quad_transform;
+	mat4f m_cube_transform;
+	mat4f m_sphere1_transform;
+	mat4f m_sphere2_transform;
+	mat4f m_sphere3_transform;
+
+	//mat4f final_sphere1_transform;
+	//mat4f final_sphere2_transform;
+	//mat4f final_sphere3_transform;
 
 	mat4f m_view_matrix;
 	mat4f m_projection_matrix;

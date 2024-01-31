@@ -1,5 +1,5 @@
 #pragma once
-#include "C:\Users\hugo\Unity_Projects\eduRend\src\model.h"
+#include "C:\Users\hugo\OneDrive\Desktop\Datorgrafik\eduRend\src\model.h"
 
 class Cube : public Model
 {

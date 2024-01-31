@@ -1,6 +1,7 @@
 
 #include "Scene.h"
 #include "QuadModel.h"
+#include "C:\Users\hugo\OneDrive\Desktop\Datorgrafik\eduRend\Cube.h"
 #include "OBJModel.h"
 
 Scene::Scene(
@@ -49,7 +50,11 @@ void OurTestScene::Init()
 
 	// Create objects
 	m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
+	m_cube = new Cube(m_dxdevice, m_dxdevice_context);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
+	m_sphere1 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
+	m_sphere2 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
+	m_sphere3 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
 }
 
 //
@@ -70,6 +75,10 @@ void OurTestScene::Update(
 	if (input_handler.IsKeyPressed(Keys::Left) || input_handler.IsKeyPressed(Keys::A))
 		m_camera->Move({ -m_camera_velocity * dt, 0.0f, 0.0f });
 
+	//Camera rotation when space is pressed
+	if (input_handler.IsKeyPressed(Keys::Space))
+		m_camera->RotateWithMouse(input_handler, 0.2f, dt);
+
 	// Now set/update object transformations
 	// This can be done using any sequence of transformation matrices,
 	// but the T*R*S order is most common; i.e. scale, then rotate, and then translate.
@@ -85,6 +94,22 @@ void OurTestScene::Update(
 	m_sponza_transform = mat4f::translation(0, -5, 0) *		 // Move down 5 units
 		mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * // Rotate pi/2 radians (90 degrees) around y
 		mat4f::scaling(0.05f);						 // The scene is quite large so scale it down to 5%
+
+	m_cube_transform = mat4f::translation(0, 0, 0) *			// No translation
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
+		mat4f::scaling(1.5, 1.5, 1.5);
+
+	m_sphere1_transform = mat4f::translation(0, 2, 0) *			// No translation
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
+		mat4f::scaling(1.0, 1.0, 1.0);
+
+	m_sphere2_transform = mat4f::translation(2, 0, 0) *  // No additional translation
+		mat4f::rotation(0.0f, 0.0f, 0.0f, 1.0f) *  // No additional rotation
+		mat4f::scaling(0.5, 0.5, 0.5);
+
+	m_sphere3_transform = mat4f::translation(3, 0, 0) *  // No additional translation
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *  // No additional rotation
+		mat4f::scaling(0.25, 0.25, 0.25);
 
 	// Increment the rotation angle.
 	m_angle += m_angular_velocity * dt;
@@ -112,8 +137,23 @@ void OurTestScene::Render()
 	m_projection_matrix = m_camera->ProjectionMatrix();
 
 	// Load matrices + the Quad's transformation to the device and render it
-	UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
-	m_quad->Render();
+	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
+	m_cube->Render();
+
+	// Update and render sphere1
+	mat4f final_sphere1_transform = m_sphere1_transform;
+	UpdateTransformationBuffer(final_sphere1_transform, m_view_matrix, m_projection_matrix);
+	m_sphere1->Render();
+
+	// Update and render sphere2
+	mat4f final_sphere2_transform = m_sphere1_transform * m_sphere2_transform;
+	UpdateTransformationBuffer(final_sphere2_transform, m_view_matrix, m_projection_matrix);
+	m_sphere2->Render();
+
+	// Update and render sphere3
+	mat4f final_sphere3_transform = final_sphere2_transform * m_sphere3_transform;
+	UpdateTransformationBuffer(final_sphere3_transform, m_view_matrix, m_projection_matrix);
+	m_sphere3->Render();
 
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
@@ -123,6 +163,7 @@ void OurTestScene::Render()
 void OurTestScene::Release()
 {
 	SAFE_DELETE(m_quad);
+	SAFE_DELETE(m_cube);
 	SAFE_DELETE(m_sponza);
 	SAFE_DELETE(m_camera);
 
