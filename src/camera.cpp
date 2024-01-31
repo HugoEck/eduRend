@@ -18,26 +18,11 @@ void Camera::Move(const vec3f& direction) noexcept
 
 void Camera::RotateWithMouse(const InputHandler& inputHandler, float sensitivity, float deltaTime) noexcept
 {
-    //long deltaX = inputHandler.GetMouseDeltaX() * sensitivity * deltaTime;
-    //long deltaY = inputHandler.GetMouseDeltaY() * sensitivity * deltaTime;
-
 	float deltaX = static_cast<float>(inputHandler.GetMouseDeltaX()) * sensitivity * deltaTime;
 	float deltaY = static_cast<float>(inputHandler.GetMouseDeltaY()) * sensitivity * deltaTime;
 
-    // Update the yaw (rotation around the y-axis)
     m_yaw += deltaX;
-
-    // Limit pitch to avoid gimbal lock and unnatural movements
     m_pitch += deltaY;
-
-    constexpr float maxPitch = 89.0f;
-    // Clamp m_pitch to the range [-maxPitch, maxPitch]
-    if (m_pitch > maxPitch) {
-        m_pitch = maxPitch;
-    }
-    else if (m_pitch < -maxPitch) {
-        m_pitch = -maxPitch;
-    }
 }
 
 mat4f Camera::WorldToViewMatrix() const noexcept
@@ -52,13 +37,13 @@ mat4f Camera::WorldToViewMatrix() const noexcept
 	//return mat4f::translation(-m_position);
 
 	// Combine translation and rotation to get the View-to-World matrix
-	mat4f translationMatrix = mat4f::translation(-m_position);
-	mat4f rotationMatrix = mat4f::rotation(0.0f, m_yaw, m_pitch);
+	mat4f T = mat4f::translation(-m_position);
+	mat4f R = mat4f::rotation(0.0f, m_yaw, m_pitch);
 
 	// View-to-World transform is inverse of T(p)*R
-	mat4f viewToWorldMatrix = translationMatrix * rotationMatrix;
+	mat4f viewToWorldMatrix = T * R;
 
-	mat4f worldToViewMatrix = transpose(rotationMatrix) * translationMatrix;
+	mat4f worldToViewMatrix = transpose(R) * T;
 
 	return worldToViewMatrix;
 }

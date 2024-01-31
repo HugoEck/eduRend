@@ -99,16 +99,18 @@ void OurTestScene::Update(
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
 		mat4f::scaling(1.5, 1.5, 1.5);
 
-	m_sphere1_transform = mat4f::translation(0, 2, 0) *			// No translation
-		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
+	m_sphere1_transform = mat4f::translation(1, 2, 0) *
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *
 		mat4f::scaling(1.0, 1.0, 1.0);
 
-	m_sphere2_transform = mat4f::translation(2, 0, 0) *  // No additional translation
-		mat4f::rotation(0.0f, 0.0f, 0.0f, 1.0f) *  // No additional rotation
+	m_sphere2_transform = mat4f::translation(3, 0, 0) * 
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) * 
+		mat4f::rotation(0.0f, 0.0f, 0.0f, 0.0f) * 
 		mat4f::scaling(0.5, 0.5, 0.5);
 
-	m_sphere3_transform = mat4f::translation(3, 0, 0) *  // No additional translation
-		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *  // No additional rotation
+	m_sphere3_transform = mat4f::translation(4, 0, 0) * 
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) * 
+		mat4f::rotation(0.0f, 0.0f, 0.0f, 0.0f) * 
 		mat4f::scaling(0.25, 0.25, 0.25);
 
 	// Increment the rotation angle.
@@ -141,18 +143,15 @@ void OurTestScene::Render()
 	m_cube->Render();
 
 	// Update and render sphere1
-	mat4f final_sphere1_transform = m_sphere1_transform;
-	UpdateTransformationBuffer(final_sphere1_transform, m_view_matrix, m_projection_matrix);
+	UpdateTransformationBuffer(m_sphere1_transform, m_view_matrix, m_projection_matrix);
 	m_sphere1->Render();
 
 	// Update and render sphere2
-	mat4f final_sphere2_transform = m_sphere1_transform * m_sphere2_transform;
-	UpdateTransformationBuffer(final_sphere2_transform, m_view_matrix, m_projection_matrix);
+	UpdateTransformationBuffer(m_sphere1_transform * m_sphere2_transform, m_view_matrix, m_projection_matrix);
 	m_sphere2->Render();
 
 	// Update and render sphere3
-	mat4f final_sphere3_transform = final_sphere2_transform * m_sphere3_transform;
-	UpdateTransformationBuffer(final_sphere3_transform, m_view_matrix, m_projection_matrix);
+	UpdateTransformationBuffer(m_sphere1_transform * m_sphere2_transform * m_sphere3_transform, m_view_matrix, m_projection_matrix);
 	m_sphere3->Render();
 
 	// Load matrices + Sponza's transformation to the device and render it

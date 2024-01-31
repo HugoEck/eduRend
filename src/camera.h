@@ -25,8 +25,7 @@ public:
 	 * @param[in] far_plane Far plane distance, must be larger than the near plane.
 	*/
 	inline constexpr Camera(float vertical_fov, float aspect_ratio, float near_plane, float far_plane) noexcept 
-		: m_vertical_fov(vertical_fov), m_aspect_ratio(aspect_ratio), m_near_plane(near_plane), m_far_plane(far_plane), m_position(0.0f), m_yaw(0.0f), m_pitch(0.0f), 
-			m_accumulatedDeltaX(0), m_accumulatedDeltaY(0) {}
+		: m_vertical_fov(vertical_fov), m_aspect_ratio(aspect_ratio), m_near_plane(near_plane), m_far_plane(far_plane), m_position(0.0f), m_yaw(0.0f), m_pitch(0.0f) {}
 
 	/**
 	 * @brief Move the camera to a new position
@@ -79,9 +78,6 @@ private:
 	float m_pitch;        // Pitch angle (vertical rotation)
 
 	linalg::vec3f m_position;
-
-	long m_accumulatedDeltaX;
-	long m_accumulatedDeltaY;
 };
 
 #endif
