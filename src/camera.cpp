@@ -13,25 +13,17 @@ void Camera::MoveTo(const vec3f& position) noexcept
 
 void Camera::Move(const vec3f& direction) noexcept
 {
-	vec3f forward = normalize(vec3f{ sin(m_yaw), -sin(m_pitch), -cos(m_yaw) * cos(m_pitch) });
-	vec3f right = normalize(vec3f{ -cos(m_yaw), 0.0f, -sin(m_yaw) });
+	vec3f forward = normalize(vec3f{ sin(m_yaw), -sin(m_pitch), cos(m_yaw) * cos(m_pitch) });
+	vec3f right = normalize(vec3f{ sin(m_yaw - fPI / 2.0f), 0.0f, cos(m_yaw - fPI / 2.0f) });
 
-	// Calculate the up direction manually
-	vec3f up;
-	up.x = forward.y * right.z - forward.z * right.y;
-	up.y = forward.z * right.x - forward.x * right.z;
-	up.z = forward.x * right.y - forward.y * right.x;
-	up = normalize(up);
-
-	// Calculate left, back, and down vectors
-	vec3f left = -right;
-	vec3f back = -forward;
-	vec3f down = -up;
-
-	// Update position components individually
-	m_position.x += direction.x * right.x + direction.y * up.x + direction.z * forward.x;
-	m_position.y += direction.x * right.y + direction.y * up.y + direction.z * forward.y;
-	m_position.z += direction.x * right.z + direction.y * up.z + direction.z * forward.z;
+	if (direction.z != 0)
+	{
+		m_position += forward * direction.z;
+	}
+	if (direction.x != 0)
+	{
+		m_position += right * direction.x;
+	}
 }
 
 void Camera::RotateWithMouse(const InputHandler& inputHandler, float sensitivity, float deltaTime) noexcept
@@ -41,6 +33,9 @@ void Camera::RotateWithMouse(const InputHandler& inputHandler, float sensitivity
 
     m_yaw += deltaX;
     m_pitch += deltaY;
+
+	const float maxPitch = 90.0f * fPI / 180.0f;
+	m_pitch = max(-maxPitch, min(maxPitch, m_pitch));
 }
 
 mat4f Camera::WorldToViewMatrix() const noexcept

@@ -164,6 +164,9 @@ void OurTestScene::Release()
 {
 	SAFE_DELETE(m_quad);
 	SAFE_DELETE(m_cube);
+	SAFE_DELETE(m_sphere1); 
+	SAFE_DELETE(m_sphere2); 
+	SAFE_DELETE(m_sphere3);
 	SAFE_DELETE(m_sponza);
 	SAFE_DELETE(m_camera);
 
