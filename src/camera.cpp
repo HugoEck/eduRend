@@ -13,7 +13,25 @@ void Camera::MoveTo(const vec3f& position) noexcept
 
 void Camera::Move(const vec3f& direction) noexcept
 {
-	m_position += direction;
+	vec3f forward = normalize(vec3f{ sin(m_yaw), -sin(m_pitch), -cos(m_yaw) * cos(m_pitch) });
+	vec3f right = normalize(vec3f{ -cos(m_yaw), 0.0f, -sin(m_yaw) });
+
+	// Calculate the up direction manually
+	vec3f up;
+	up.x = forward.y * right.z - forward.z * right.y;
+	up.y = forward.z * right.x - forward.x * right.z;
+	up.z = forward.x * right.y - forward.y * right.x;
+	up = normalize(up);
+
+	// Calculate left, back, and down vectors
+	vec3f left = -right;
+	vec3f back = -forward;
+	vec3f down = -up;
+
+	// Update position components individually
+	m_position.x += direction.x * right.x + direction.y * up.x + direction.z * forward.x;
+	m_position.y += direction.x * right.y + direction.y * up.y + direction.z * forward.y;
+	m_position.z += direction.x * right.z + direction.y * up.z + direction.z * forward.z;
 }
 
 void Camera::RotateWithMouse(const InputHandler& inputHandler, float sensitivity, float deltaTime) noexcept
@@ -36,11 +54,9 @@ mat4f Camera::WorldToViewMatrix() const noexcept
 
 	//return mat4f::translation(-m_position);
 
-	// Combine translation and rotation to get the View-to-World matrix
 	mat4f T = mat4f::translation(-m_position);
 	mat4f R = mat4f::rotation(0.0f, m_yaw, m_pitch);
 
-	// View-to-World transform is inverse of T(p)*R
 	mat4f viewToWorldMatrix = T * R;
 
 	mat4f worldToViewMatrix = transpose(R) * T;

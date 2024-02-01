@@ -99,6 +99,7 @@ void OurTestScene::Update(
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
 		mat4f::scaling(1.5, 1.5, 1.5);
 
+	//Sphere hierarchy 1 to 3. Another rotation added for orbit on 2 and 3.
 	m_sphere1_transform = mat4f::translation(1, 2, 0) *
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *
 		mat4f::scaling(1.0, 1.0, 1.0);
