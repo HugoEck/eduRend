@@ -49,5 +49,12 @@ public:
 	/**
 	 * @brief Destructor 
 	*/
+
+	void CreateMaterialBuffer();
+
+
+	void UpdateMaterialBuffer(const Material& material) const;
+
+
 	~OBJModel();
 };

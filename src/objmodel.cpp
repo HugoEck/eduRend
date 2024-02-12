@@ -1,5 +1,6 @@
 #include "OBJModel.h"
 
+
 OBJModel::OBJModel(
 	const std::string& objfile,
 	ID3D11Device* dxdevice,
@@ -60,6 +61,9 @@ OBJModel::OBJModel(
 	// Copy materials from mesh
 	append_materials(mesh->Materials);
 
+	// Create the material buffer
+	CreateMaterialBuffer();
+
 	// Go through materials and load textures (if any) to device
 	std::cout << "Loading textures..." << std::endl;
 	for (auto& material : m_materials)
@@ -102,14 +106,54 @@ void OBJModel::Render() const
 		// Fetch material
 		const Material& material = m_materials[indexRange.MaterialIndex];
 
+		// Update material buffer
+		UpdateMaterialBuffer(material);
+
 		// Bind diffuse texture to slot t0 of the PS
 		m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
 		// + bind other textures here, e.g. a normal map, to appropriate slots
+		m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
 		// Make the drawcall
 		m_dxdevice_context->DrawIndexed(indexRange.Size, indexRange.Start, 0);
 	}
 }
+
+void OBJModel::CreateMaterialBuffer()
+{
+	HRESULT hr;
+	D3D11_BUFFER_DESC buffer_desc = {};
+	buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
+	buffer_desc.ByteWidth = sizeof(MaterialBuffer);
+	buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	hr = m_dxdevice->CreateBuffer(&buffer_desc, nullptr, &m_material_buffer);
+	ASSERT(SUCCEEDED(hr)); // Check if buffer creation was successful
+	if (FAILED(hr))
+	{
+		// Handle error (e.g., log error message, throw exception, etc.)
+	}
+}
+
+void OBJModel::UpdateMaterialBuffer(const Material& material) const
+{
+	// Map the resource buffer, obtain a pointer, and then write the material properties to it
+	D3D11_MAPPED_SUBRESOURCE resource;
+	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+	MaterialBuffer* buffer_data = static_cast<MaterialBuffer*>(resource.pData);
+
+	// Copy material properties to the buffer
+	buffer_data->AmbientColor = vec4f(material.AmbientColour, 1.0f);
+	buffer_data->DiffuseColor = vec4f(material.DiffuseColour, 1.0f);
+	buffer_data->SpecularColor = vec4f(material.SpecularColour, 1.0f);
+
+	// Unmap the buffer
+	m_dxdevice_context->Unmap(m_material_buffer, 0);
+}
+
+
+
 
 OBJModel::~OBJModel()
 {
@@ -119,4 +163,5 @@ OBJModel::~OBJModel()
 
 		// Release other used textures ...
 	}
+	SAFE_RELEASE(m_material_buffer);
 }

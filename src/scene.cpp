@@ -31,6 +31,7 @@ OurTestScene::OurTestScene(
 	Scene(dxdevice, dxdevice_context, window_width, window_height)
 { 
 	InitTransformationBuffer();
+	InitLightCameraBuffer();
 	// + init other CBuffers
 }
 
@@ -135,6 +136,10 @@ void OurTestScene::Render()
 	// Bind transformation_buffer to slot b0 of the VS
 	m_dxdevice_context->VSSetConstantBuffers(0, 1, &m_transformation_buffer);
 
+	// Bind the light and camera position buffer to the pixel shader
+	m_dxdevice_context->PSSetConstantBuffers(0, 1, &m_light_camera_buffer);
+
+
 	// Obtain the matrices needed for rendering from the camera
 	m_view_matrix = m_camera->WorldToViewMatrix();
 	m_projection_matrix = m_camera->ProjectionMatrix();
@@ -158,6 +163,8 @@ void OurTestScene::Render()
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
 	m_sponza->Render();
+
+	UpdateLightCameraBuffer();
 }
 
 void OurTestScene::Release()
@@ -171,6 +178,7 @@ void OurTestScene::Release()
 	SAFE_DELETE(m_camera);
 
 	SAFE_RELEASE(m_transformation_buffer);
+	SAFE_RELEASE(m_light_camera_buffer);
 	// + release other CBuffers
 }
 
@@ -210,4 +218,29 @@ void OurTestScene::UpdateTransformationBuffer(
 	matrixBuffer->WorldToViewMatrix = WorldToViewMatrix;
 	matrixBuffer->ProjectionMatrix = ProjectionMatrix;
 	m_dxdevice_context->Unmap(m_transformation_buffer, 0);
+}
+
+void OurTestScene::InitLightCameraBuffer()
+{
+	HRESULT hr;
+	D3D11_BUFFER_DESC lightCameraBufferDesc = {};
+	lightCameraBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	lightCameraBufferDesc.ByteWidth = sizeof(LightCameraBuffer);
+	lightCameraBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	lightCameraBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lightCameraBufferDesc.MiscFlags = 0;
+	lightCameraBufferDesc.StructureByteStride = 0;
+	ASSERT(hr = m_dxdevice->CreateBuffer(&lightCameraBufferDesc, nullptr, &m_light_camera_buffer));
+}
+
+void OurTestScene::UpdateLightCameraBuffer()
+{
+	// Map the resource buffer, obtain a pointer and then write the camera and light positions to it
+	D3D11_MAPPED_SUBRESOURCE resource;
+	m_dxdevice_context->Map(m_light_camera_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+	LightCameraBuffer* bufferData = (LightCameraBuffer*)resource.pData;
+	bufferData->cameraPosition = vec4f(m_camera->GetPosition(), 1.0f);
+	// Set light position accordingly
+	bufferData->lightPosition = vec4f(0.0f, 5.0f, 0.0f, 1.0f);
+	m_dxdevice_context->Unmap(m_light_camera_buffer, 0);
 }
