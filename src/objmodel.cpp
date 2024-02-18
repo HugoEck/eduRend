@@ -122,28 +122,30 @@ void OBJModel::Render() const
 void OBJModel::CreateMaterialBuffer()
 {
 	HRESULT hr;
-	D3D11_BUFFER_DESC buffer_desc = {};
-	buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
-	buffer_desc.ByteWidth = sizeof(MaterialBuffer);
-	buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	D3D11_BUFFER_DESC materialBufferDesc = {};
+	materialBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	materialBufferDesc.ByteWidth = sizeof(MaterialBuffer);
+	materialBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	materialBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	materialBufferDesc.MiscFlags = 0;
+	materialBufferDesc.StructureByteStride = 0;
 
-	hr = m_dxdevice->CreateBuffer(&buffer_desc, nullptr, &m_material_buffer);
-	ASSERT(SUCCEEDED(hr)); // Check if buffer creation was successful
-	if (FAILED(hr))
-	{
-		// Handle error (e.g., log error message, throw exception, etc.)
-	}
+	ASSERT(hr = m_dxdevice->CreateBuffer(&materialBufferDesc, nullptr, &m_material_buffer));
+	std::cout << "HR RESULT MATERIALBUFFER " << hr << std::endl;
+
 }
 
 void OBJModel::UpdateMaterialBuffer(const Material& material) const
 {
 	// Map the resource buffer, obtain a pointer, and then write the material properties to it
 	D3D11_MAPPED_SUBRESOURCE resource;
+
 	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+
 	MaterialBuffer* buffer_data = static_cast<MaterialBuffer*>(resource.pData);
 
 	// Copy material properties to the buffer
+	buffer_data->Shininess = 1.0f;
 	buffer_data->AmbientColor = vec4f(material.AmbientColour, 1.0f);
 	buffer_data->DiffuseColor = vec4f(material.DiffuseColour, 1.0f);
 	buffer_data->SpecularColor = vec4f(material.SpecularColour, 1.0f);

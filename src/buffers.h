@@ -29,5 +29,6 @@ struct MaterialBuffer
 	vec4f DiffuseColor;
 	vec4f SpecularColor;
 	float Shininess;
+	float padding[3];
 	// Add more material properties as needed
 };

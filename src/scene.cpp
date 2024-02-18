@@ -165,6 +165,7 @@ void OurTestScene::Render()
 	m_sponza->Render();
 
 	UpdateLightCameraBuffer();
+
 }
 
 void OurTestScene::Release()
