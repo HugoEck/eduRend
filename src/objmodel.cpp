@@ -99,8 +99,10 @@ void OBJModel::Render() const
 
 	// Bind index buffer
 	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
+	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
 	// + bind other textures here, e.g. a normal map, to appropriate slots
+	UpdateMaterialBuffer(currentmaterial);
 
 	// Iterate Drawcalls
 	for (auto& indexRange : m_index_ranges)
@@ -109,9 +111,7 @@ void OBJModel::Render() const
 		const Material& material = m_materials[indexRange.MaterialIndex];
 
 		// Update material buffer
-		UpdateMaterialBuffer(material);
 
-		m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 		// Bind diffuse texture to slot t0 of the PS
 		m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
 
@@ -146,7 +146,7 @@ void OBJModel::UpdateMaterialBuffer(const Material& material) const
 
 	// Copy material properties to the buffer
 	buffer_data->AmbientColour = material.AmbientColour;
-	buffer_data->DiffuseColour =  material.DiffuseColour;
+	buffer_data->DiffuseColour = material.DiffuseColour;
 	buffer_data->SpecularColour = material.SpecularColour;
 	//buffer_data->Shininess = material.Shininess;
 
@@ -164,6 +164,6 @@ OBJModel::~OBJModel()
 		SAFE_RELEASE(material.DiffuseTexture.TextureView);
 
 		// Release other used textures ...
-	SAFE_RELEASE(m_material_buffer);
 	}
+	SAFE_RELEASE(m_material_buffer);
 }
