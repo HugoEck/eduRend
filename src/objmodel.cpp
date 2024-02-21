@@ -100,6 +100,9 @@ void OBJModel::Render() const
 	// Bind index buffer
 	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
 
+	// + bind other textures here, e.g. a normal map, to appropriate slots
+	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
+
 	// Iterate Drawcalls
 	for (auto& indexRange : m_index_ranges)
 	{
@@ -111,8 +114,6 @@ void OBJModel::Render() const
 
 		// Bind diffuse texture to slot t0 of the PS
 		m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
-		// + bind other textures here, e.g. a normal map, to appropriate slots
-		m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
 		// Make the drawcall
 		m_dxdevice_context->DrawIndexed(indexRange.Size, indexRange.Start, 0);
@@ -124,7 +125,7 @@ void OBJModel::CreateMaterialBuffer()
 	HRESULT hr;
 	D3D11_BUFFER_DESC materialBufferDesc = {};
 	materialBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	materialBufferDesc.ByteWidth = sizeof(MaterialBuffer);
+	materialBufferDesc.ByteWidth = sizeof(Material);
 	materialBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	materialBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	materialBufferDesc.MiscFlags = 0;
@@ -142,13 +143,12 @@ void OBJModel::UpdateMaterialBuffer(const Material& material) const
 
 	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
 
-	MaterialBuffer* buffer_data = static_cast<MaterialBuffer*>(resource.pData);
+	Material* buffer_data = static_cast<Material*>(resource.pData);
 
 	// Copy material properties to the buffer
-	buffer_data->Shininess = 1.0f;
-	buffer_data->AmbientColor = vec4f(material.AmbientColour, 1.0f);
-	buffer_data->DiffuseColor = vec4f(material.DiffuseColour, 1.0f);
-	buffer_data->SpecularColor = vec4f(material.SpecularColour, 1.0f);
+	buffer_data->AmbientColour = material.AmbientColour;
+	buffer_data->DiffuseColour = material.DiffuseColour;
+	buffer_data->SpecularColour = material.SpecularColour;
 
 	// Unmap the buffer
 	m_dxdevice_context->Unmap(m_material_buffer, 0);
