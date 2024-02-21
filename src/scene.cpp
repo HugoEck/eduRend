@@ -242,6 +242,6 @@ void OurTestScene::UpdateLightCameraBuffer()
 	LightCameraBuffer* bufferData = (LightCameraBuffer*)resource.pData;
 	bufferData->cameraPosition = vec4f(m_camera->GetPosition(), 1.0f);
 	// Set light position accordingly
-	bufferData->lightPosition = vec4f(0.0f, 0.0f, 0.0f, 1.0f);
+	bufferData->lightPosition = vec4f(500.0f, 1000.0f, -200.0f, 1.0f);
 	m_dxdevice_context->Unmap(m_light_camera_buffer, 0);
 }

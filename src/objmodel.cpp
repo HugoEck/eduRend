@@ -101,7 +101,6 @@ void OBJModel::Render() const
 	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
 
 	// + bind other textures here, e.g. a normal map, to appropriate slots
-	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
 	// Iterate Drawcalls
 	for (auto& indexRange : m_index_ranges)
@@ -112,6 +111,7 @@ void OBJModel::Render() const
 		// Update material buffer
 		UpdateMaterialBuffer(material);
 
+		m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 		// Bind diffuse texture to slot t0 of the PS
 		m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
 
@@ -125,7 +125,7 @@ void OBJModel::CreateMaterialBuffer()
 	HRESULT hr;
 	D3D11_BUFFER_DESC materialBufferDesc = {};
 	materialBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	materialBufferDesc.ByteWidth = sizeof(Material);
+	materialBufferDesc.ByteWidth = sizeof(Material) * m_materials.size();
 	materialBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	materialBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	materialBufferDesc.MiscFlags = 0;
@@ -133,7 +133,6 @@ void OBJModel::CreateMaterialBuffer()
 
 	ASSERT(hr = m_dxdevice->CreateBuffer(&materialBufferDesc, nullptr, &m_material_buffer));
 	std::cout << "HR RESULT MATERIALBUFFER " << hr << std::endl;
-
 }
 
 void OBJModel::UpdateMaterialBuffer(const Material& material) const
@@ -147,8 +146,9 @@ void OBJModel::UpdateMaterialBuffer(const Material& material) const
 
 	// Copy material properties to the buffer
 	buffer_data->AmbientColour = material.AmbientColour;
-	buffer_data->DiffuseColour = material.DiffuseColour;
+	buffer_data->DiffuseColour =  material.DiffuseColour;
 	buffer_data->SpecularColour = material.SpecularColour;
+	//buffer_data->Shininess = material.Shininess;
 
 	// Unmap the buffer
 	m_dxdevice_context->Unmap(m_material_buffer, 0);
@@ -164,6 +164,6 @@ OBJModel::~OBJModel()
 		SAFE_RELEASE(material.DiffuseTexture.TextureView);
 
 		// Release other used textures ...
-	}
 	SAFE_RELEASE(m_material_buffer);
+	}
 }
