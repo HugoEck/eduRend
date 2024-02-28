@@ -140,7 +140,7 @@ void OBJLoader::LoadMaterials(
         {
             current_mtl->AmbientColour = vec3f(a, b, c);
         }
-        else if (sscanf_s(line.c_str(), "Kd %f %f %f", &a, &b, &c) == 3)
+        else if (sscanf_s(line.c_str(), "Kd %f %f f", &a, &b, &c) == 3)
         {
             current_mtl->DiffuseColour = vec3f(a, b, c);
         }

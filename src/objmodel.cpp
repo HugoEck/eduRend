@@ -101,16 +101,17 @@ void OBJModel::Render() const
 	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
 	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
-	// + bind other textures here, e.g. a normal map, to appropriate slots
-	UpdateMaterialBuffer(currentmaterial);
+	vec3f ambientColor = { 0.0f, 0.0f, 0.0f };
+	vec3f diffuseColor = { 0.0f, 1.0f, 1.0f };
+	vec3f specularColor = { 1.0f, 1.0f, 1.0f };
+
+	UpdateMaterialBuffer(ambientColor, diffuseColor, specularColor);
 
 	// Iterate Drawcalls
 	for (auto& indexRange : m_index_ranges)
 	{
 		// Fetch material
 		const Material& material = m_materials[indexRange.MaterialIndex];
-
-		// Update material buffer
 
 		// Bind diffuse texture to slot t0 of the PS
 		m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
@@ -125,7 +126,7 @@ void OBJModel::CreateMaterialBuffer()
 	HRESULT hr;
 	D3D11_BUFFER_DESC materialBufferDesc = {};
 	materialBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	materialBufferDesc.ByteWidth = sizeof(Material) * m_materials.size();
+	materialBufferDesc.ByteWidth = sizeof(Material);
 	materialBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	materialBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	materialBufferDesc.MiscFlags = 0;
@@ -135,20 +136,17 @@ void OBJModel::CreateMaterialBuffer()
 	std::cout << "HR RESULT MATERIALBUFFER " << hr << std::endl;
 }
 
-void OBJModel::UpdateMaterialBuffer(const Material& material) const
+void OBJModel::UpdateMaterialBuffer(const vec3f ambientColor, const vec3f diffuseColor, const vec3f specularColor) const
 {
 	// Map the resource buffer, obtain a pointer, and then write the material properties to it
 	D3D11_MAPPED_SUBRESOURCE resource;
-
 	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
-
 	Material* buffer_data = static_cast<Material*>(resource.pData);
 
 	// Copy material properties to the buffer
-	buffer_data->AmbientColour = material.AmbientColour;
-	buffer_data->DiffuseColour = material.DiffuseColour;
-	buffer_data->SpecularColour = material.SpecularColour;
-	//buffer_data->Shininess = material.Shininess;
+	buffer_data->AmbientColour = ambientColor;
+	buffer_data->DiffuseColour = diffuseColor;
+	buffer_data->SpecularColour = specularColor;
 
 	// Unmap the buffer
 	m_dxdevice_context->Unmap(m_material_buffer, 0);

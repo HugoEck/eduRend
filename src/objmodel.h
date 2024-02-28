@@ -53,7 +53,7 @@ public:
 	void CreateMaterialBuffer();
 
 
-	void UpdateMaterialBuffer(const Material& material) const;
+	void UpdateMaterialBuffer(const vec3f ambientColor, const vec3f, const vec3f specularColor) const;
 
 
 	~OBJModel();

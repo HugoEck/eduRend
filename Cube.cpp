@@ -1,15 +1,40 @@
 #include "Cube.h"
+#include "C:\Users\hugo\OneDrive\Desktop\Datorgrafik\eduRend\src\model.h"
 #pragma once
 
-#include "C:\Users\hugo\OneDrive\Desktop\Datorgrafik\eduRend\src\model.h"
 
 
     Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context)
         : Model(dxdevice, dxdevice_context)
     {
+
         // Vertex and index arrays
         std::vector<Vertex> vertices;
         std::vector<unsigned> indices;
+        std::vector<Material> m_materials;
+
+        // Go through materials and load textures (if any) to device
+        std::cout << "Loading textures..." << std::endl;
+        for (auto& material : m_materials)
+        {
+            HRESULT hr;
+
+            // Load Diffuse texture
+            //
+            if (material.DiffuseTextureFilename.size()) {
+
+                hr = LoadTextureFromFile(
+                    dxdevice,
+                    material.DiffuseTextureFilename.c_str(),
+                    &material.DiffuseTexture);
+                std::cout << "\t" << material.DiffuseTextureFilename
+                    << (SUCCEEDED(hr) ? " - OK" : "- FAILED") << std::endl;
+            }
+
+            // + other texture types here - see Material class
+            // ...
+        }
+        std::cout << "Done." << std::endl;
 
         Vertex v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23;
 
