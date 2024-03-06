@@ -82,6 +82,8 @@ class OurTestScene : public Scene
 	//Cbuffer for Light and Camera
 	ID3D11Buffer* m_light_camera_buffer = nullptr;
 
+	ID3D11SamplerState* m_samplerState;
+
 	// + other CBuffers
 
 	//
@@ -119,6 +121,12 @@ class OurTestScene : public Scene
 	void InitLightCameraBuffer();
 
 	void UpdateLightCameraBuffer();
+
+	void InitializeSamplerState(D3D11_FILTER filter,
+		D3D11_TEXTURE_ADDRESS_MODE addressU,
+		D3D11_TEXTURE_ADDRESS_MODE addressV,
+		D3D11_TEXTURE_ADDRESS_MODE addressW,
+		UINT maxAnisotropy);
 
 
 public:

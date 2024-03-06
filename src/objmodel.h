@@ -55,6 +55,8 @@ public:
 
 	void UpdateMaterialBuffer(const vec3f ambientColor, const vec3f, const vec3f specularColor) const;
 
+	void ComputeTangentBinormal(const std::vector<Vertex>& vertices, const std::vector<unsigned>& indices);
+
 
 	~OBJModel();
 };

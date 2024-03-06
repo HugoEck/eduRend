@@ -30,6 +30,9 @@ OBJModel::OBJModel(
 		indexOffset = (unsigned int)indices.size();
 	}
 
+	// Compute Tangent and Binormal
+	ComputeTangentBinormal(mesh->Vertices, indices);
+
 	// Vertex array descriptor
 	D3D11_BUFFER_DESC vertexbufferDesc = { 0 };
 	vertexbufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -150,6 +153,46 @@ void OBJModel::UpdateMaterialBuffer(const vec3f ambientColor, const vec3f diffus
 
 	// Unmap the buffer
 	m_dxdevice_context->Unmap(m_material_buffer, 0);
+}
+
+void OBJModel::ComputeTangentBinormal(const std::vector<Vertex>& vertices, const std::vector<unsigned>& indices) {
+	for (size_t i = 0; i < indices.size(); i += 3) {
+		const Vertex& v0 = vertices[indices[i]];
+		const Vertex& v1 = vertices[indices[i + 1]];
+		const Vertex& v2 = vertices[indices[i + 2]];
+
+		// Calculate edge vectors
+		linalg::vec3f edge1 = v1.Position - v0.Position;
+		linalg::vec3f edge2 = v2.Position - v0.Position;
+
+		// Calculate texture coordinate differences
+		linalg::vec2f deltaUV1 = v1.TexCoord - v0.TexCoord;
+		linalg::vec2f deltaUV2 = v2.TexCoord - v0.TexCoord;
+
+		// Calculate tangent
+		float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+		linalg::vec3f tangent;
+		tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+		tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+		tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+		tangent = normalize(tangent);
+
+		// Calculate binormal
+		linalg::vec3f binormal;
+		binormal.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+		binormal.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+		binormal.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+		binormal = normalize(binormal);
+
+		// Assign tangent and binormal to vertices
+		vertices[indices[i]].Tangent == tangent;
+		vertices[indices[i + 1]].Tangent == tangent;
+		vertices[indices[i + 2]].Tangent == tangent;
+
+		vertices[indices[i]].Binormal == binormal;
+		vertices[indices[i + 1]].Binormal == binormal;
+		vertices[indices[i + 2]].Binormal == binormal;
+	}
 }
 
 

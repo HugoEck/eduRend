@@ -56,6 +56,14 @@ void OurTestScene::Init()
 	m_sphere1 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
 	m_sphere2 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
 	m_sphere3 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
+
+	InitializeSamplerState(
+		D3D11_FILTER_MIN_MAG_MIP_LINEAR, // Filter type
+		D3D11_TEXTURE_ADDRESS_WRAP,     // Address mode for U coordinate
+		D3D11_TEXTURE_ADDRESS_MIRROR,     // Address mode for V coordinate
+		D3D11_TEXTURE_ADDRESS_CLAMP,      // Address mode for W coordinate
+		16                                // Anisotropy level
+	);
 }
 
 //
@@ -139,6 +147,8 @@ void OurTestScene::Render()
 	// Bind the light and camera position buffer to the pixel shader
 	m_dxdevice_context->PSSetConstantBuffers(0, 1, &m_light_camera_buffer);
 
+	// Bind the sampler state to the pixel shader
+	m_dxdevice_context->PSSetSamplers(0, 1, &m_samplerState);
 
 	// Obtain the matrices needed for rendering from the camera
 	m_view_matrix = m_camera->WorldToViewMatrix();
@@ -180,6 +190,7 @@ void OurTestScene::Release()
 
 	SAFE_RELEASE(m_transformation_buffer);
 	SAFE_RELEASE(m_light_camera_buffer);
+	SAFE_RELEASE(m_samplerState);
 	// + release other CBuffers
 }
 
@@ -244,4 +255,47 @@ void OurTestScene::UpdateLightCameraBuffer()
 	// Set light position accordingly
 	bufferData->lightPosition = vec4f(10.0f, 0.0f, 0.0f, 1.0f);
 	m_dxdevice_context->Unmap(m_light_camera_buffer, 0);
+}
+
+//void OurTestScene::InitializeSamplerState()
+//{
+//	HRESULT hr;
+//
+//	// Sampler state description
+//	D3D11_SAMPLER_DESC samplerDesc = {};
+//	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; // Example filter type
+//	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;    // Example address mode
+//	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;    // Example address mode
+//	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;    // Example address mode
+//	samplerDesc.MaxAnisotropy = 16;                       // Example anisotropy level
+//	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS; // Default comparison function
+//	samplerDesc.MinLOD = 0;                               // Default minimum level-of-detail
+//	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;               // Default maximum level-of-detail
+//
+//	// Create the sampler state
+//	ASSERT(hr = m_dxdevice->CreateSamplerState(&samplerDesc, &m_samplerState));
+//}
+
+void OurTestScene::InitializeSamplerState(
+	D3D11_FILTER filter,
+	D3D11_TEXTURE_ADDRESS_MODE addressU,
+	D3D11_TEXTURE_ADDRESS_MODE addressV,
+	D3D11_TEXTURE_ADDRESS_MODE addressW,
+	UINT maxAnisotropy)
+{
+	HRESULT hr;
+
+	// Sampler state description
+	D3D11_SAMPLER_DESC samplerDesc = {};
+	samplerDesc.Filter = filter;
+	samplerDesc.AddressU = addressU;
+	samplerDesc.AddressV = addressV;
+	samplerDesc.AddressW = addressW;
+	samplerDesc.MaxAnisotropy = maxAnisotropy;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS; // Default comparison function
+	samplerDesc.MinLOD = 0; // Default minimum level-of-detail
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX; // Default maximum level-of-detail
+
+	// Create the sampler state
+	ASSERT(hr = m_dxdevice->CreateSamplerState(&samplerDesc, &m_samplerState));
 }
