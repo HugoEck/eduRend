@@ -24,6 +24,7 @@ class OBJModel : public Model
 
 	std::vector<IndexRange> m_index_ranges;
 	std::vector<Material> m_materials;
+	ID3D11SamplerState* m_samplerStateNormal;
 
 	void append_materials(const std::vector<Material>& mtl_vec)
 	{
@@ -53,7 +54,7 @@ public:
 	void CreateMaterialBuffer();
 
 
-	void UpdateMaterialBuffer(const vec3f ambientColor, const vec3f, const vec3f specularColor) const;
+	void UpdateMaterialBuffer(const vec4f ambientColor, const vec4f, const vec4f specularColor) const;
 
 	void ComputeTangentBinormal(const std::vector<Vertex>& vertices, const std::vector<unsigned>& indices);
 

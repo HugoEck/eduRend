@@ -35,9 +35,9 @@ struct Vertex
 */
 struct Material
 {
-	vec3f AmbientColour; //= { 0.0f, 0.5f, 0.0f };   
-	vec3f DiffuseColour; //= { 0.0f, 0.5f, 0.0f };   
-	vec3f SpecularColour;// = { 0.0f, 0.0f, 0.0f };
+	vec3f AmbientColour;  
+	vec3f DiffuseColour;  
+	vec3f SpecularColour;
 
 	//float Shininess = 50.0f;
     

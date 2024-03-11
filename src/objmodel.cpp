@@ -74,7 +74,6 @@ OBJModel::OBJModel(
 		HRESULT hr;
 
 		// Load Diffuse texture
-		//
 		if (material.DiffuseTextureFilename.size()) {
 
 			hr = LoadTextureFromFile(
@@ -104,9 +103,9 @@ void OBJModel::Render() const
 	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
 	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
-	vec3f ambientColor = { 0.0f, 0.0f, 0.0f };
-	vec3f diffuseColor = { 0.0f, 1.0f, 1.0f };
-	vec3f specularColor = { 1.0f, 1.0f, 1.0f };
+	vec4f ambientColor = { 0.2f, 0.2f, 0.2f, 1.0f};
+	vec4f diffuseColor = { 1.0f, 1.0f, 1.0f, 1.0f};
+	vec4f specularColor = { 1.0f, 1.0f, 1.0f, 1.0f};
 
 	UpdateMaterialBuffer(ambientColor, diffuseColor, specularColor);
 
@@ -119,6 +118,9 @@ void OBJModel::Render() const
 		// Bind diffuse texture to slot t0 of the PS
 		m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
 
+		// Bind texNormalSampler to slot s1 of the PS
+		m_dxdevice_context->PSSetSamplers(1, 1, &m_samplerStateNormal);
+
 		// Make the drawcall
 		m_dxdevice_context->DrawIndexed(indexRange.Size, indexRange.Start, 0);
 	}
@@ -129,7 +131,7 @@ void OBJModel::CreateMaterialBuffer()
 	HRESULT hr;
 	D3D11_BUFFER_DESC materialBufferDesc = {};
 	materialBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	materialBufferDesc.ByteWidth = sizeof(Material);
+	materialBufferDesc.ByteWidth = sizeof(MaterialBuffer);
 	materialBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	materialBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	materialBufferDesc.MiscFlags = 0;
@@ -139,17 +141,17 @@ void OBJModel::CreateMaterialBuffer()
 	std::cout << "HR RESULT MATERIALBUFFER " << hr << std::endl;
 }
 
-void OBJModel::UpdateMaterialBuffer(const vec3f ambientColor, const vec3f diffuseColor, const vec3f specularColor) const
+void OBJModel::UpdateMaterialBuffer(const vec4f ambientColor, const vec4f diffuseColor, const vec4f specularColor) const
 {
 	// Map the resource buffer, obtain a pointer, and then write the material properties to it
 	D3D11_MAPPED_SUBRESOURCE resource;
 	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
-	Material* buffer_data = static_cast<Material*>(resource.pData);
+	MaterialBuffer* buffer_data = static_cast<MaterialBuffer*>(resource.pData);
 
 	// Copy material properties to the buffer
-	buffer_data->AmbientColour = ambientColor;
-	buffer_data->DiffuseColour = diffuseColor;
-	buffer_data->SpecularColour = specularColor;
+	buffer_data->AmbientColor = ambientColor;
+	buffer_data->DiffuseColor = diffuseColor;
+	buffer_data->SpecularColor = specularColor;
 
 	// Unmap the buffer
 	m_dxdevice_context->Unmap(m_material_buffer, 0);

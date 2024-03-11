@@ -91,6 +91,8 @@ class OurTestScene : public Scene
 	//
 	Camera* m_camera;
 
+	Material sponzaMaterial;
+
 	Model* m_quad;
 	Model* m_cube;
 	Model* m_sponza;
