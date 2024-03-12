@@ -253,28 +253,9 @@ void OurTestScene::UpdateLightCameraBuffer()
 	LightCameraBuffer* bufferData = (LightCameraBuffer*)resource.pData;
 	bufferData->cameraPosition = vec4f(m_camera->GetPosition(), 1.0f);
 	// Set light position accordingly
-	bufferData->lightPosition = vec4f(10.0f, 0.0f, 0.0f, 1.0f);
+	bufferData->lightPosition = vec4f(10.0f, 10.0f, 0.0f, 0.0f);
 	m_dxdevice_context->Unmap(m_light_camera_buffer, 0);
 }
-
-//void OurTestScene::InitializeSamplerState()
-//{
-//	HRESULT hr;
-//
-//	// Sampler state description
-//	D3D11_SAMPLER_DESC samplerDesc = {};
-//	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; // Example filter type
-//	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;    // Example address mode
-//	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;    // Example address mode
-//	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;    // Example address mode
-//	samplerDesc.MaxAnisotropy = 16;                       // Example anisotropy level
-//	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS; // Default comparison function
-//	samplerDesc.MinLOD = 0;                               // Default minimum level-of-detail
-//	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;               // Default maximum level-of-detail
-//
-//	// Create the sampler state
-//	ASSERT(hr = m_dxdevice->CreateSamplerState(&samplerDesc, &m_samplerState));
-//}
 
 void OurTestScene::InitializeSamplerState(
 	D3D11_FILTER filter,

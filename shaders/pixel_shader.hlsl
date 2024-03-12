@@ -41,7 +41,9 @@ float4 PS_main(PSIn input) : SV_Target
     
     // Sample normal map texture and transform the normal from tangent space to world space
     float3 normalSample = texNormal.Sample(texDiffuseSampler, input.TexCoord).rgb * 2.0f - 1.0f; // Map from [0, 1] to [-1, 1]
-    float3 normal = normalize(input.Tangent * normalSample.x + input.Binormal * normalSample.y + input.Normal * normalSample.z);
+    float3x3 TBN = transpose(float3x3(input.Tangent, input.Binormal, input.Normal));
+    float3 normalMap = mul(TBN, normalSample);
+    float3 normal = normalMap;
     
     // Calculate the direction from the surface point to the light source
     float3 lightDirection = normalize(lightPosition.xyz - input.WorldPos);
@@ -62,7 +64,8 @@ float4 PS_main(PSIn input) : SV_Target
     float3 finalColor = AmbientColour + diffuseLight + specularLight;
     
     // Return the final color as a float4
-    return float4(normal * 0.5f + 0.5f, 1.0f);
+    //return float4(normal * 0.5f + 0.5f, 1.0f);
+    return float4(finalColor, Shininess);
     
 
 };

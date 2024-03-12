@@ -129,9 +129,6 @@ void OBJModel::Render() const
 		m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
 		m_dxdevice_context->PSSetShaderResources(1, 1, &material.NormalTexture.TextureView);
 
-		// Bind texNormalSampler to slot s1 of the PS
-		//m_dxdevice_context->PSSetSamplers(1, 1, &m_samplerStateNormal);
-
 		// Make the drawcall
 		m_dxdevice_context->DrawIndexed(indexRange.Size, indexRange.Start, 0);
 	}
