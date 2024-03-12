@@ -50,7 +50,8 @@ struct Material
 	// + more texture types (extend OBJLoader::LoadMaterials if needed)
 
 	// Device textures
-	Texture DiffuseTexture; //!< Diffuse Texture
+	Texture DiffuseTexture;
+	Texture NormalTexture;//!< Diffuse Texture
 	// + other texture types
 };
 

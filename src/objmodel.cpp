@@ -28,10 +28,11 @@ OBJModel::OBJModel(
 		m_index_ranges.push_back({ indexOffset, indexSize, 0, materialIndex });
 
 		indexOffset = (unsigned int)indices.size();
+
+		// Compute Tangent and Binormal
+		ComputeTangentBinormal(mesh->Vertices, indices);
 	}
 
-	// Compute Tangent and Binormal
-	ComputeTangentBinormal(mesh->Vertices, indices);
 
 	// Vertex array descriptor
 	D3D11_BUFFER_DESC vertexbufferDesc = { 0 };
@@ -83,6 +84,15 @@ OBJModel::OBJModel(
 			std::cout << "\t" << material.DiffuseTextureFilename
 				<< (SUCCEEDED(hr) ? " - OK" : "- FAILED") << std::endl;
 		}
+		if (material.NormalTextureFilename.size()) {
+
+			hr = LoadTextureFromFile(
+				dxdevice,
+				material.NormalTextureFilename.c_str(),
+				&material.NormalTexture);
+			std::cout << "\t" << material.NormalTextureFilename
+				<< (SUCCEEDED(hr) ? " - OK" : "- FAILED") << std::endl;
+		}
 
 		// + other texture types here - see Material class
 		// ...
@@ -103,9 +113,9 @@ void OBJModel::Render() const
 	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
 	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
-	vec4f ambientColor = { 0.2f, 0.2f, 0.2f, 1.0f};
-	vec4f diffuseColor = { 1.0f, 1.0f, 1.0f, 1.0f};
-	vec4f specularColor = { 1.0f, 1.0f, 1.0f, 1.0f};
+	vec4f ambientColor = { 0.2f, 0.2f, 0.2f, 1.0f };
+	vec4f diffuseColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	vec4f specularColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	UpdateMaterialBuffer(ambientColor, diffuseColor, specularColor);
 
@@ -117,9 +127,10 @@ void OBJModel::Render() const
 
 		// Bind diffuse texture to slot t0 of the PS
 		m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
+		m_dxdevice_context->PSSetShaderResources(1, 1, &material.NormalTexture.TextureView);
 
 		// Bind texNormalSampler to slot s1 of the PS
-		m_dxdevice_context->PSSetSamplers(1, 1, &m_samplerStateNormal);
+		//m_dxdevice_context->PSSetSamplers(1, 1, &m_samplerStateNormal);
 
 		// Make the drawcall
 		m_dxdevice_context->DrawIndexed(indexRange.Size, indexRange.Start, 0);
@@ -187,13 +198,13 @@ void OBJModel::ComputeTangentBinormal(const std::vector<Vertex>& vertices, const
 		binormal = normalize(binormal);
 
 		// Assign tangent and binormal to vertices
-		vertices[indices[i]].Tangent == tangent;
-		vertices[indices[i + 1]].Tangent == tangent;
-		vertices[indices[i + 2]].Tangent == tangent;
+		vertices[indices[i]].Tangent = tangent;
+		vertices[indices[i + 1]].Tangent = tangent;
+		vertices[indices[i + 2]].Tangent = tangent;
 
-		vertices[indices[i]].Binormal == binormal;
-		vertices[indices[i + 1]].Binormal == binormal;
-		vertices[indices[i + 2]].Binormal == binormal;
+		vertices[indices[i]].Binormal = binormal;
+		vertices[indices[i + 1]].Binormal = binormal;
+		vertices[indices[i + 2]].Binormal = binormal;
 	}
 }
 
@@ -205,6 +216,7 @@ OBJModel::~OBJModel()
 	for (auto& material : m_materials)
 	{
 		SAFE_RELEASE(material.DiffuseTexture.TextureView);
+		SAFE_RELEASE(material.NormalTexture.TextureView);
 
 		// Release other used textures ...
 	}

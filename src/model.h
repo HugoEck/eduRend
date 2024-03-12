@@ -36,8 +36,6 @@ protected:
 	// Pointer to Material Constant Buffer
 	ID3D11Buffer* m_material_buffer = nullptr;
 
-	Material currentmaterial;
-
 public:
 
 	/**

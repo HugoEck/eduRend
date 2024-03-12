@@ -24,7 +24,6 @@ class OBJModel : public Model
 
 	std::vector<IndexRange> m_index_ranges;
 	std::vector<Material> m_materials;
-	ID3D11SamplerState* m_samplerStateNormal;
 
 	void append_materials(const std::vector<Material>& mtl_vec)
 	{
