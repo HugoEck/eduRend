@@ -168,7 +168,7 @@ void OBJModel::UpdateMaterialBuffer(const vec4f ambientColor, const vec4f diffus
 	m_dxdevice_context->Unmap(m_material_buffer, 0);
 }
 
-void OBJModel::ComputeTangentBinormal(const std::vector<Vertex>& vertices, const std::vector<unsigned>& indices) {
+void OBJModel::ComputeTangentBinormal(std::vector<Vertex>& vertices, std::vector<unsigned>& indices) {
 	for (size_t i = 0; i < indices.size(); i += 3) {
 		const Vertex& v0 = vertices[indices[i]];
 		const Vertex& v1 = vertices[indices[i + 1]];
