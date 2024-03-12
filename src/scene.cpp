@@ -102,7 +102,7 @@ void OurTestScene::Update(
 	// Sponza model-to-world transformation
 	m_sponza_transform = mat4f::translation(0, -5, 0) *		 // Move down 5 units
 		mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * // Rotate pi/2 radians (90 degrees) around y
-		mat4f::scaling(0.05f);						 // The scene is quite large so scale it down to 5%
+		mat4f::scaling(1.0f);						 // The scene is quite large so scale it down to 5%
 
 	m_cube_transform = mat4f::translation(0, 0, 0) *			// No translation
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
@@ -253,7 +253,7 @@ void OurTestScene::UpdateLightCameraBuffer()
 	LightCameraBuffer* bufferData = (LightCameraBuffer*)resource.pData;
 	bufferData->cameraPosition = vec4f(m_camera->GetPosition(), 1.0f);
 	// Set light position accordingly
-	bufferData->lightPosition = vec4f(10.0f, 10.0f, 0.0f, 0.0f);
+	bufferData->lightPosition = vec4f(0.0f, 20.0f, 0.0f, 1.0f);
 	m_dxdevice_context->Unmap(m_light_camera_buffer, 0);
 }
 
