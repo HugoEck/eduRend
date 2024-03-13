@@ -59,12 +59,12 @@ void OurTestScene::Init()
 
 	// Initialize cube map filenames
 	const char* cube_filenames[6] = {
-		"cubemaps/brightday/posx",
-		"cubemaps/brightday/negx",
-		"cubemaps/brightday/posy",
-		"cubemaps/brightday/negy",
-		"cubemaps/brightday/posz",
-		"cubemaps/brightday/negz"
+		"cubemaps/brightday/posx.",
+		"cubemaps/brightday/negx.",
+		"cubemaps/brightday/posy.",
+		"cubemaps/brightday/negy.",
+		"cubemaps/brightday/posz.",
+		"cubemaps/brightday/negz."
 	};
 
 	// Load cube map texture
@@ -83,8 +83,8 @@ void OurTestScene::Init()
 	);
 	InitializeCubeMapSamplerState(
 		D3D11_FILTER_MIN_MAG_MIP_LINEAR, // Filter type
-		D3D11_TEXTURE_ADDRESS_WRAP,     // Address mode for U coordinate
-		D3D11_TEXTURE_ADDRESS_MIRROR,     // Address mode for V coordinate
+		D3D11_TEXTURE_ADDRESS_CLAMP,     // Address mode for U coordinate
+		D3D11_TEXTURE_ADDRESS_CLAMP,     // Address mode for V coordinate
 		D3D11_TEXTURE_ADDRESS_CLAMP,      // Address mode for W coordinate
 		16                                // Anisotropy level
 	);
@@ -221,6 +221,7 @@ void OurTestScene::Release()
 	SAFE_RELEASE(m_transformation_buffer);
 	SAFE_RELEASE(m_light_camera_buffer);
 	SAFE_RELEASE(m_samplerState);
+	SAFE_RELEASE(cube_texture.TextureView);
 	// + release other CBuffers
 }
 
