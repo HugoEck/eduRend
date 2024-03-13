@@ -83,6 +83,7 @@ class OurTestScene : public Scene
 	ID3D11Buffer* m_light_camera_buffer = nullptr;
 
 	ID3D11SamplerState* m_samplerState;
+	ID3D11SamplerState* m_cubeMapSamplerState = nullptr;
 
 	// + other CBuffers
 
@@ -92,6 +93,7 @@ class OurTestScene : public Scene
 	Camera* m_camera;
 
 	Material sponzaMaterial;
+	Texture cube_texture;
 
 	Model* m_quad;
 	Model* m_cube;
@@ -113,7 +115,7 @@ class OurTestScene : public Scene
 	// Misc
 	float m_angle = 0;			// A per-frame updated rotation angle (radians)...
 	float m_angular_velocity = fPI / 2;	// ...and its velocity (radians/sec)
-	float m_camera_velocity = 5.0f;	// Camera movement velocity in units/s
+	float m_camera_velocity = 20.0f;	// Camera movement velocity in units/s
 	float m_fps_cooldown = 0;
 
 	void InitTransformationBuffer();
@@ -125,6 +127,12 @@ class OurTestScene : public Scene
 	void UpdateLightCameraBuffer();
 
 	void InitializeSamplerState(D3D11_FILTER filter,
+		D3D11_TEXTURE_ADDRESS_MODE addressU,
+		D3D11_TEXTURE_ADDRESS_MODE addressV,
+		D3D11_TEXTURE_ADDRESS_MODE addressW,
+		UINT maxAnisotropy);
+
+	void InitializeCubeMapSamplerState(D3D11_FILTER filter,
 		D3D11_TEXTURE_ADDRESS_MODE addressU,
 		D3D11_TEXTURE_ADDRESS_MODE addressV,
 		D3D11_TEXTURE_ADDRESS_MODE addressW,
