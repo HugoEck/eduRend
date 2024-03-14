@@ -83,7 +83,6 @@ class OurTestScene : public Scene
 	ID3D11Buffer* m_light_camera_buffer = nullptr;
 
 	ID3D11SamplerState* m_samplerState;
-	ID3D11SamplerState* m_cubeMapSamplerState = nullptr;
 
 	// + other CBuffers
 
@@ -93,7 +92,6 @@ class OurTestScene : public Scene
 	Camera* m_camera;
 
 	Material sponzaMaterial;
-	Texture cube_texture;
 
 	Model* m_quad;
 	Model* m_cube;
