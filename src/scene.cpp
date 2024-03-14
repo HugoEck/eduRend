@@ -105,8 +105,8 @@ void OurTestScene::Update(
 		mat4f::scaling(1.0f);						 // The scene is quite large so scale it down to 5%
 
 	m_cube_transform = mat4f::translation(0, 0, 0) *			// No translation
-		mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
-		mat4f::scaling(5.0f, 5.0f, 5.0f);
+		mat4f::rotation(0.0f, 0.0f, 0.0f, 0.0f) *	// Rotate continuously around the y-axis
+		mat4f::scaling(.0f, .0f, .0f);
 
 	//Sphere hierarchy 1 to 3. Another rotation added for orbit on 2 and 3.
 	m_sphere1_transform = mat4f::translation(3, 2, 0) *
