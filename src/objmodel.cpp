@@ -113,7 +113,7 @@ void OBJModel::Render() const
 	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
 	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
-	vec4f ambientColor = { 0.2f, 0.2f, 0.2f, 1.0f };
+	vec4f ambientColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 	vec4f diffuseColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 	vec4f specularColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 

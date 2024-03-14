@@ -63,7 +63,8 @@ float4 PS_main(PSIn input) : SV_Target
     // Calculate the specular lighting contribution using the Phong reflection model
     float3 specularLight = SpecularColour * pow(max(0.0f, dot(reflectionDirection, viewDirection)), Shininess);
     
-    //specularLight += cubeMapTexture.Sample(cubeMapSampler, reflectionDirection).rgb; // Use reflectionDirection
+    float3 cubeMap = cubeMapTexture.Sample(cubeMapSampler, reflectionDirection).rgb; // Use reflectionDirection
+    specularLight += cubeMap;
     
         // Integrate the reflected color into the diffuse and specular components
     //float3 finalDiffuse = diffuseLight + cubeMapColor;
@@ -73,8 +74,7 @@ float4 PS_main(PSIn input) : SV_Target
     //float3 finalColor = AmbientColour + finalDiffuse + finalSpecular;
     
     // Combine ambient, diffuse, and specular lighting
-    float3 finalColor = AmbientColour + diffuseLight + specularLight;
-   
+    float3 finalColor = (AmbientColour + diffuseLight + specularLight) * diffuseTextureColor;
     // Return the final color as a float4
     //return float4(normal * 0.5f + 0.5f, 1.0f);
     return float4(finalColor, Shininess);

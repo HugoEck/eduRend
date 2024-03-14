@@ -48,14 +48,33 @@ void OurTestScene::Init()
 
 	// Move camera to (0,0,5)
 	m_camera->MoveTo({ 0, 0, 5 });
+	// Initialize cube map filenames
+	const char* cube_filenames[6] = {
+		"cubemaps/brightday/posx.png",
+		"cubemaps/brightday/negx.png",
+		"cubemaps/brightday/posy.png",
+		"cubemaps/brightday/negy.png",
+		"cubemaps/brightday/posz.png",
+		"cubemaps/brightday/negz.png"
+	};
+
+	
 
 	// Create objects
-	m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
+	m_quad = new QuadModel( m_dxdevice, m_dxdevice_context);
 	m_cube = new Cube(m_dxdevice, m_dxdevice_context);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
 	m_sphere1 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
 	m_sphere2 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
 	m_sphere3 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
+
+
+	// Load cube map texture
+	HRESULT hrc = LoadCubeTextureFromFile(m_dxdevice, cube_filenames, &cube_texture);
+	if (SUCCEEDED(hrc))
+		std::cout << "Cubemap loaded successfully" << std::endl;
+	else
+		std::cout << "Cubemap failed to load" << std::endl;
 
 	InitializeSamplerState(
 		D3D11_FILTER_MIN_MAG_MIP_LINEAR, // Filter type
@@ -106,7 +125,7 @@ void OurTestScene::Update(
 
 	m_cube_transform = mat4f::translation(0, 0, 0) *			// No translation
 		mat4f::rotation(0.0f, 0.0f, 0.0f, 0.0f) *	// Rotate continuously around the y-axis
-		mat4f::scaling(.0f, .0f, .0f);
+		mat4f::scaling(50.0f, 50.0f, 50.0f);
 
 	//Sphere hierarchy 1 to 3. Another rotation added for orbit on 2 and 3.
 	m_sphere1_transform = mat4f::translation(3, 2, 0) *
@@ -150,11 +169,11 @@ void OurTestScene::Render()
 	// Bind the sampler state to the pixel shader
 	m_dxdevice_context->PSSetSamplers(0, 1, &m_samplerState);
 
-	//m_dxdevice_context->PSSetSamplers(1, 1, &m_cubeMapSamplerState);
+	m_dxdevice_context->PSSetSamplers(1, 1, &m_cubeMapSamplerState);
 
-	//// Set cube map texture in pixel shader
-	//const unsigned cube_slot = 2; // Choose a suitable slot for the cube map texture
-	//m_dxdevice_context->PSSetShaderResources(cube_slot, 1, &cube_texture.TextureView);
+		// Set cube map texture in pixel shader
+	const unsigned cube_slot = 2; // Choose a suitable slot for the cube map texture
+	m_dxdevice_context->PSSetShaderResources(cube_slot, 1, &cube_texture.TextureView);
 
 	// Obtain the matrices needed for rendering from the camera
 	m_view_matrix = m_camera->WorldToViewMatrix();
@@ -197,6 +216,7 @@ void OurTestScene::Release()
 	SAFE_RELEASE(m_transformation_buffer);
 	SAFE_RELEASE(m_light_camera_buffer);
 	SAFE_RELEASE(m_samplerState);
+	SAFE_RELEASE(m_cubeMapSamplerState);
 	// + release other CBuffers
 }
 
@@ -285,4 +305,28 @@ void OurTestScene::InitializeSamplerState(
 
 	// Create the sampler state
 	ASSERT(hr = m_dxdevice->CreateSamplerState(&samplerDesc, &m_samplerState));
+}
+
+void Cube::InitializeCubeMapSamplerState(
+	D3D11_FILTER filter,
+	D3D11_TEXTURE_ADDRESS_MODE addressU,
+	D3D11_TEXTURE_ADDRESS_MODE addressV,
+	D3D11_TEXTURE_ADDRESS_MODE addressW,
+	UINT maxAnisotropy)
+{
+	HRESULT hr;
+
+	// Sampler state description
+	D3D11_SAMPLER_DESC samplerDesc = {};
+	samplerDesc.Filter = filter;
+	samplerDesc.AddressU = addressU;
+	samplerDesc.AddressV = addressV;
+	samplerDesc.AddressW = addressW;
+	samplerDesc.MaxAnisotropy = maxAnisotropy;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS; // Default comparison function
+	samplerDesc.MinLOD = 0; // Default minimum level-of-detail
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX; // Default maximum level-of-detail
+
+	// Create the sampler state
+	ASSERT(hr = m_dxdevice->CreateSamplerState(&samplerDesc, &m_cubeMapSamplerState));
 }
