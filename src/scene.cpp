@@ -135,7 +135,7 @@ void OurTestScene::Update(
 
 	//Sphere hierarchy 1 to 3. Another rotation added for orbit on 2 and 3.
 	m_sphere1_transform = mat4f::translation(3, 2, 0) *
-		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *
+		mat4f::rotation(0.0f, 0.0f, 0.0f, 0.0f) *
 		mat4f::scaling(1.0, 1.0, 1.0);
 
 	m_sphere2_transform = mat4f::translation(3, 0, 0) * 
@@ -185,13 +185,14 @@ void OurTestScene::Render()
 	m_view_matrix = m_camera->WorldToViewMatrix();
 	m_projection_matrix = m_camera->ProjectionMatrix();
 
+	// Update and render sphere1
+	UpdateTransformationBuffer(m_sphere1_transform, m_view_matrix, m_projection_matrix);
+	m_sphere1->Render();
+
 	// Load matrices + the Quad's transformation to the device and render it
 	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
 	m_cube->Render();
 
-	//// Update and render sphere1
-	//UpdateTransformationBuffer(m_sphere1_transform, m_view_matrix, m_projection_matrix);
-	//m_sphere1->Render();
 	//
 	//// Update and render sphere2
 	//UpdateTransformationBuffer(m_sphere1_transform * m_sphere2_transform, m_view_matrix, m_projection_matrix);
