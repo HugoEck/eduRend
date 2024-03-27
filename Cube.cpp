@@ -28,19 +28,19 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context)
 	// Define the vertices for a cube
 	// Front face
 	v0.Position = { -0.5f, -0.5f, 0.5f };
-	v0.Normal = { 0, 0, 1 };
+	v0.Normal = { 0, 0, 0 };
 	v0.TexCoord = { 0, 0 };
 	
 	v1.Position = { 0.5f, -0.5f, 0.5f };
-	v1.Normal = { 0, 0, 1 };
+	v1.Normal = { 0, 0, 0 };
 	v1.TexCoord = { 0, 1 };
 	
 	v2.Position = { 0.5f, 0.5f, 0.5f };
-	v2.Normal = { 0, 0, 1 };
+	v2.Normal = { 0, 0, 0 };
 	v2.TexCoord = { 1, 1 };
 	
 	v3.Position = { -0.5f, 0.5f, 0.5f };
-	v3.Normal = { 0, 0, 1 };
+	v3.Normal = { 0, 0, 0 };
 	v3.TexCoord = { 1, 0 };
 
 	//// Front face (inverted winding order)
@@ -67,194 +67,194 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context)
 
 	//// Back face
 	v4.Position = { 0.5f, -0.5f, -0.5f };
-	v4.Normal = { 0, 0, -1 };
+	v4.Normal = { 0, 0, 0 };
 	v4.TexCoord = { 1, 0 };
 	
 	v5.Position = { -0.5f, -0.5f, -0.5f };
-	v5.Normal = { 0, 0, -1 };
+	v5.Normal = { 0, 0, 0 };
 	v5.TexCoord = { 0, 0 };
 	
 	v6.Position = { -0.5f, 0.5f, -0.5f };
-	v6.Normal = { 0, 0, -1 };
+	v6.Normal = { 0, 0, 0 };
 	v6.TexCoord = { 0, 1 };
 	
 	v7.Position = { 0.5f, 0.5f, -0.5f };
-	v7.Normal = { 0, 0, -1 };
+	v7.Normal = { 0, 0, 0 };
 	v7.TexCoord = { 1, 1 };
-
+	
 	//// Back face (inverted winding order)
 	//v4.Position = { 0.5f, -0.5f, -0.5f };
 	//v4.Normal = { 0, 0, 1 }; // Invert the normal
 	//v4.TexCoord = { 1, 0 }; // Flip the texture coordinates
-
+	
 	//v5.Position = { -0.5f, -0.5f, -0.5f };
 	//v5.Normal = { 0, 0, 1 };
 	//v5.TexCoord = { 0, 0 };
-
+	
 	//v6.Position = { -0.5f, 0.5f, -0.5f };
 	//v6.Normal = { 0, 0, 1 };
 	//v6.TexCoord = { 0, 1 };
-
+	
 	//v7.Position = { 0.5f, 0.5f, -0.5f };
 	//v7.Normal = { 0, 0, 1 };
 	//v7.TexCoord = { 1, 1 };
-
+	
 	vertices.push_back(v4);
 	vertices.push_back(v5);
 	vertices.push_back(v6);
 	vertices.push_back(v7);
-
+	
 	//// Right face
+	//v8.Position = { 0.5f, -0.5f, 0.5f };
+	//v8.Normal = { 0, 0, 0 };
+	//v8.TexCoord = { 0, 0 };
+	//
+	//v9.Position = { 0.5f, -0.5f, -0.5f };
+	//v9.Normal = { 0, 0, 0 };
+	//v9.TexCoord = { 1, 0 };
+	//
+	//v10.Position = { 0.5f, 0.5f, -0.5f };
+	//v10.Normal = { 0, 0, 0 };
+	//v10.TexCoord = { 1, 1 };
+	//
+	//v11.Position = { 0.5f, 0.5f, 0.5f };
+	//v11.Normal = { 0, 0, 0 };
+	//v11.TexCoord = { 0, 1 };
+	
+	// Right face (inverted winding order)
 	v8.Position = { 0.5f, -0.5f, 0.5f };
-	v8.Normal = { 1, 0, 0 };
-	v8.TexCoord = { 0, 0 };
+	v8.Normal = { 0, 0, 0 }; // Invert the normal
+	v8.TexCoord = { 0, 1 }; // Flip the texture coordinates
 	
 	v9.Position = { 0.5f, -0.5f, -0.5f };
-	v9.Normal = { 1, 0, 0 };
-	v9.TexCoord = { 1, 0 };
+	v9.Normal = { 0, 0, 0 };
+	v9.TexCoord = { 1, 1 };
 	
 	v10.Position = { 0.5f, 0.5f, -0.5f };
-	v10.Normal = { 1, 0, 0 };
-	v10.TexCoord = { 1, 1 };
+	v10.Normal = { 0, 0, 0 };
+	v10.TexCoord = { 1, 0 };
 	
 	v11.Position = { 0.5f, 0.5f, 0.5f };
-	v11.Normal = { 1, 0, 0 };
-	v11.TexCoord = { 0, 1 };
-
-	// Right face (inverted winding order)
-	//v8.Position = { 0.5f, -0.5f, 0.5f };
-	//v8.Normal = { -1, 0, 0 }; // Invert the normal
-	//v8.TexCoord = { 0, 1 }; // Flip the texture coordinates
-
-	//v9.Position = { 0.5f, -0.5f, -0.5f };
-	//v9.Normal = { -1, 0, 0 };
-	//v9.TexCoord = { 1, 1 };
-
-	//v10.Position = { 0.5f, 0.5f, -0.5f };
-	//v10.Normal = { -1, 0, 0 };
-	//v10.TexCoord = { 1, 0 };
-
-	//v11.Position = { 0.5f, 0.5f, 0.5f };
-	//v11.Normal = { -1, 0, 0 };
-	//v11.TexCoord = { 0, 0 };
-
+	v11.Normal = { 0, 0, 0 };
+	v11.TexCoord = { 0, 0 };
+	
 	vertices.push_back(v8);
 	vertices.push_back(v9);
 	vertices.push_back(v10);
 	vertices.push_back(v11);
-
+	
 	//// Left face
 	v12.Position = { -0.5f, -0.5f, -0.5f };
-	v12.Normal = { -1, 0, 0 };
+	v12.Normal = { 0, 0, 0 };
 	v12.TexCoord = { 0, 1 };
 	
 	v13.Position = { -0.5f, -0.5f, 0.5f };
-	v13.Normal = { -1, 0, 0 };
+	v13.Normal = { 0, 0, 0 };
 	v13.TexCoord = { 1, 1 };
 	
 	v14.Position = { -0.5f, 0.5f, 0.5f };
-	v14.Normal = { -1, 0, 0 };
+	v14.Normal = { 0, 0, 0 };
 	v14.TexCoord = { 1, 0 };
 	
 	v15.Position = { -0.5f, 0.5f, -0.5f };
-	v15.Normal = { -1, 0, 0 };
+	v15.Normal = { 0, 0, 0 };
 	v15.TexCoord = { 0, 0 };
-
+	
 	// Left face (inverted winding order)
 	//v12.Position = { -0.5f, -0.5f, -0.5f };
 	//v12.Normal = { 1, 0, 0 }; // Invert the normal
 	//v12.TexCoord = { 0, 0 }; // Flip the texture coordinates
-
+	
 	//v13.Position = { -0.5f, -0.5f, 0.5f };
 	//v13.Normal = { 1, 0, 0 };
 	//v13.TexCoord = { 1, 0 };
-
+	
 	//v14.Position = { -0.5f, 0.5f, 0.5f };
 	//v14.Normal = { 1, 0, 0 };
 	//v14.TexCoord = { 1, 1 };
-
+	
 	//v15.Position = { -0.5f, 0.5f, -0.5f };
 	//v15.Normal = { 1, 0, 0 };
 	//v15.TexCoord = { 0, 1 };
-
+	
 	vertices.push_back(v12);
 	vertices.push_back(v13);
 	vertices.push_back(v14);
 	vertices.push_back(v15);
-
+	
 	//// Top face
 	v16.Position = { -0.5f, 0.5f, 0.5f };
-	v16.Normal = { 0, 1, 0 };
-	v16.TexCoord = { 0, 0 };
-	
-	v17.Position = { 0.5f, 0.5f, 0.5f };
-	v17.Normal = { 0, 1, 0 };
-	v17.TexCoord = { 1, 0 };
-	
-	v18.Position = { 0.5f, 0.5f, -0.5f };
-	v18.Normal = { 0, 1, 0 };
-	v18.TexCoord = { 1, 1 };
-	
-	v19.Position = { -0.5f, 0.5f, -0.5f };
-	v19.Normal = { 0, 1, 0 };
-	v19.TexCoord = { 0, 1 };
+	v16.Normal = { 0, 0, 0 };
+	v16.TexCoord = { 1, 0 }; // Flip the v-coordinate
 
+	v17.Position = { 0.5f, 0.5f, 0.5f };
+	v17.Normal = { 0, 0, 0 };
+	v17.TexCoord = { 0, 0 }; // Flip the v-coordinate
+
+	v18.Position = { 0.5f, 0.5f, -0.5f };
+	v18.Normal = { 0, 0, 0 };
+	v18.TexCoord = { 0, 1 }; // Flip the v-coordinate
+
+	v19.Position = { -0.5f, 0.5f, -0.5f };
+	v19.Normal = { 0, 0, 0 };
+	v19.TexCoord = { 1, 1 }; // Flip the v-coordinate
+	
 	//// Top face (inverted winding order)
 	//v16.Position = { -0.5f, 0.5f, 0.5f };
 	//v16.Normal = { 0, -1, 0 }; // Invert the normal
 	//v16.TexCoord = { 0, 0 }; // Flip the texture coordinates
-
+	
 	//v17.Position = { 0.5f, 0.5f, 0.5f };
 	//v17.Normal = { 0, -1, 0 };
 	//v17.TexCoord = { 1, 0 };
-
+	
 	//v18.Position = { 0.5f, 0.5f, -0.5f };
 	//v18.Normal = { 0, -1, 0 };
 	//v18.TexCoord = { 1, 1 };
-
+	
 	//v19.Position = { -0.5f, 0.5f, -0.5f };
 	//v19.Normal = { 0, -1, 0 };
 	//v19.TexCoord = { 0, 1 };
-
+	
 	vertices.push_back(v16);
 	vertices.push_back(v17);
 	vertices.push_back(v18);
 	vertices.push_back(v19);
-
+	
 	// Bottom face
 	v20.Position = { -0.5f, -0.5f, -0.5f };
-	v20.Normal = { 0, -1, 0 };
+	v20.Normal = { 0, 0, 0 };
 	v20.TexCoord = { 1, 0 };
 	
 	v21.Position = { 0.5f, -0.5f, -0.5f };
-	v21.Normal = { 0, -1, 0 };
+	v21.Normal = { 0, 0, 0 };
 	v21.TexCoord = { 0, 0 };
 	
 	v22.Position = { 0.5f, -0.5f, 0.5f };
-	v22.Normal = { 0, -1, 0 };
+	v22.Normal = { 0, 0, 0 };
 	v22.TexCoord = { 0, 1 };
 	
 	v23.Position = { -0.5f, -0.5f, 0.5f };
-	v23.Normal = { 0, -1, 0 };
+	v23.Normal = { 0, 0, 0 };
 	v23.TexCoord = { 1, 1 };
-
+	
 	//// Bottom face (inverted winding order)
 	//v20.Position = { -0.5f, -0.5f, -0.5f };
 	//v20.Normal = { 0, 1, 0 }; // Invert the normal
 	//v20.TexCoord = { 1, 0 }; // Flip the texture coordinates
-
+	
 	//v21.Position = { 0.5f, -0.5f, -0.5f };
 	//v21.Normal = { 0, 1, 0 };
 	//v21.TexCoord = { 0, 0 };
-
+	
 	//v22.Position = { 0.5f, -0.5f, 0.5f };
 	//v22.Normal = { 0, 1, 0 };
 	//v22.TexCoord = { 0, 1 };
-
+	
 	//v23.Position = { -0.5f, -0.5f, 0.5f };
 	//v23.Normal = { 0, 1, 0 };
 	//v23.TexCoord = { 1, 1 };
-
+	
 	vertices.push_back(v20);
 	vertices.push_back(v21);
 	vertices.push_back(v22);

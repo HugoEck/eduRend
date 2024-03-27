@@ -23,6 +23,7 @@ struct PSIn
     float3 WorldPos : WORLDPOS;
     float3 Tangent : TANGENT; // Added tangent
     float3 Binormal : BINORMAL; // Added binormal
+
 };
 
 //-----------------------------------------------------------------------------------------

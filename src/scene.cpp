@@ -50,12 +50,12 @@ void OurTestScene::Init()
 	m_camera->MoveTo({ 0, 0, 5 });
 
 	// Create objects
-	m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
-	m_cube = new Cube(m_dxdevice, m_dxdevice_context);
+	//m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
 	m_sphere1 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
 	m_sphere2 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
 	m_sphere3 = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
+	m_cube = new Cube(m_dxdevice, m_dxdevice_context);
 
 	// Initialize cube map filenames
 	const char* cube_filenames[6] = {
@@ -120,9 +120,9 @@ void OurTestScene::Update(
 	// via e.g. Mquad = linalg::mat4f_identity; 
 
 	// Quad model-to-world transformation
-	m_quad_transform = mat4f::translation(0, 0, 0) *			// No translation
-		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
-		mat4f::scaling(1.5, 1.5, 1.5);				// Scale uniformly to 150%
+	//m_quad_transform = mat4f::translation(0, 0, 0) *			// No translation
+	//	mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
+	//	mat4f::scaling(1.5, 1.5, 1.5);				// Scale uniformly to 150%
 
 	// Sponza model-to-world transformation
 	m_sponza_transform = mat4f::translation(0, -5, 0) *		 // Move down 5 units
@@ -131,7 +131,7 @@ void OurTestScene::Update(
 
 	m_cube_transform = mat4f::translation(0, 0, 0) *			// No translation
 		mat4f::rotation(0.0f, 0.0f, 0.0f, 0.0f) *	// Rotate continuously around the y-axis
-		mat4f::scaling(300.0f, 300.0f, 300.0f);
+		mat4f::scaling(250.0f, 250.0f, 250.0f);
 
 	//Sphere hierarchy 1 to 3. Another rotation added for orbit on 2 and 3.
 	m_sphere1_transform = mat4f::translation(3, 2, 0) *
@@ -186,25 +186,25 @@ void OurTestScene::Render()
 	m_projection_matrix = m_camera->ProjectionMatrix();
 
 	// Load matrices + the Quad's transformation to the device and render it
+	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
+	m_cube->Render();
 
-	// Update and render sphere1
-	UpdateTransformationBuffer(m_sphere1_transform, m_view_matrix, m_projection_matrix);
-	m_sphere1->Render();
-
-	// Update and render sphere2
-	UpdateTransformationBuffer(m_sphere1_transform * m_sphere2_transform, m_view_matrix, m_projection_matrix);
-	m_sphere2->Render();
-
-	// Update and render sphere3
-	UpdateTransformationBuffer(m_sphere1_transform * m_sphere2_transform * m_sphere3_transform, m_view_matrix, m_projection_matrix);
-	m_sphere3->Render();
+	//// Update and render sphere1
+	//UpdateTransformationBuffer(m_sphere1_transform, m_view_matrix, m_projection_matrix);
+	//m_sphere1->Render();
+	//
+	//// Update and render sphere2
+	//UpdateTransformationBuffer(m_sphere1_transform * m_sphere2_transform, m_view_matrix, m_projection_matrix);
+	//m_sphere2->Render();
+	//
+	//// Update and render sphere3
+	//UpdateTransformationBuffer(m_sphere1_transform * m_sphere2_transform * m_sphere3_transform, m_view_matrix, m_projection_matrix);
+	//m_sphere3->Render();
 
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
 	m_sponza->Render();
 
-	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
-	m_cube->Render();
 	UpdateLightCameraBuffer();
 
 }
