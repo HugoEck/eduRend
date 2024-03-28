@@ -68,6 +68,7 @@ float4 PS_main(PSIn input) : SV_Target
     // Combine ambient, diffuse, and specular lighting
     float3 finalColor = (AmbientColour + diffuseLight + specularLight) * diffuseTextureColor;
    
+    // Return the final c            olor as a float4
     //return float4(normal * 0.5f + 0.5f, 1.0f);
     return float4(finalColor, Shininess);
     

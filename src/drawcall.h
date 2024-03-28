@@ -54,6 +54,7 @@ struct Material
 	Texture NormalTexture;//!< Diffuse Texture
 	// + other texture types
 
+	std::string CubeMapTextureFilenames[6]; // Array to store cube map texture filenames
 	ID3D11ShaderResourceView* CubeMapTexture = nullptr; // Pointer to store loaded cube map texture
 };
 

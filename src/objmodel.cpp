@@ -205,6 +205,9 @@ void OBJModel::ComputeTangentBinormal(std::vector<Vertex>& vertices, std::vector
 	}
 }
 
+
+
+
 OBJModel::~OBJModel()
 {
 	for (auto& material : m_materials)
