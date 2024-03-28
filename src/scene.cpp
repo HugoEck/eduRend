@@ -185,9 +185,9 @@ void OurTestScene::Render()
 	m_view_matrix = m_camera->WorldToViewMatrix();
 	m_projection_matrix = m_camera->ProjectionMatrix();
 
-	//// Update and render sphere1
-	//UpdateTransformationBuffer(m_sphere1_transform, m_view_matrix, m_projection_matrix);
-	//m_sphere1->Render();
+	// Update and render sphere1
+	UpdateTransformationBuffer(m_sphere1_transform, m_view_matrix, m_projection_matrix);
+	m_sphere1->Render();
 
 	// Load matrices + the Quad's transformation to the device and render it
 	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
